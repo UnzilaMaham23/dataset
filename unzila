@@ -1,0 +1,40 @@
+import pandas as pd
+
+# Load the CSV file into a DataFrame
+data_file_path = os.path.join(extracted_path, 'gym_members_exercise_tracking.csv')
+df = pd.read_csv(data_file_path)
+
+# Display the first few rows and the column information to understand the dataset
+df.head(), df.info()
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+# Define X (independent variable) and y (dependent variable)
+X = df[['Session_Duration (hours)']]  # Predictor: Session duration
+y = df['Calories_Burned']            # Target: Calories burned
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train the linear regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict the test set
+y_pred = model.predict(X_test)
+
+# Calculate RMSE
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+
+# Plot the results
+plt.figure(figsize=(10, 6))
+plt.scatter(X_test, y_test, color='blue', label='Actual Data')
+plt.plot(X_test, y_pred, color='red', label='Regression Line')
+plt.title(f'Linear Regression: Session Duration vs Calories Burned\nRMSE: {rmse:.2f}')
+plt.xlabel('Session Duration (hours)')
+plt.ylabel('Calories Burned')
+plt.legend()
+plt.grid()
+plt.show()
